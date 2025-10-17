@@ -58,7 +58,7 @@ void GOL_GameStart(Game* game) {
             timer = 0;
         }
 
-        GOL_RenderWindow(game->window, game->model);
+        GOL_RenderWindow(game->window, game->model, iterate);
     }
 }
 

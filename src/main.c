@@ -3,6 +3,7 @@
 //
 
 #include <SDL3/SDL_main.h>
+#include <SDL3_ttf/SDL_ttf.h>
 
 #include "util.h"
 #include "game.h"
@@ -10,6 +11,12 @@
 int main() {
     if (!SDL_Init(SDL_INIT_VIDEO)) {
         GOL_LOG_ERROR("SDL Could not init Video");
+        return 1;
+    }
+
+    if (!TTF_Init()) {
+        GOL_LOG_ERROR("TTF Could not init TTF");
+        SDL_Quit();
         return 1;
     }
 

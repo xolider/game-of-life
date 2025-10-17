@@ -14,6 +14,7 @@ Window* GOL_CreateWindow() {
     win->window = SDL_CreateWindow("Game of Life", WINDOW_SIZE, WINDOW_SIZE, 0);
 
     if (!win->window) {
+        free(win);
         return nullptr;
     }
 
@@ -21,6 +22,26 @@ Window* GOL_CreateWindow() {
     if (!win->renderer) {
         GOL_LOG_ERROR("Could not create renderer");
         SDL_DestroyWindow(win->window);
+        free(win);
+        return nullptr;
+    }
+
+    win->engine = TTF_CreateRendererTextEngine(win->renderer);
+    if (!win->engine) {
+        GOL_LOG_ERROR("Could not create text engine");
+        SDL_DestroyRenderer(win->renderer);
+        SDL_DestroyWindow(win->window);
+        free(win);
+        return nullptr;
+    }
+
+    win->font = TTF_OpenFont(ROBOTO_TTF_PATH, 18);
+    if (!win->font) {
+        GOL_LOG_ERROR("Could not open font");
+        TTF_DestroyRendererTextEngine(win->engine);
+        SDL_DestroyRenderer(win->renderer);
+        SDL_DestroyWindow(win->window);
+        free(win);
         return nullptr;
     }
 
@@ -39,13 +60,16 @@ bool GOL_GetWindowEvent(SDL_Event* ev) {
     return SDL_PollEvent(ev);
 }
 
-void GOL_RenderWindow(const Window* window, Model* model) {
+void GOL_RenderWindow(const Window* window, Model* model, bool iterate) {
     SDL_SetRenderDrawColor(window->renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
     SDL_RenderClear(window->renderer);
     SDL_SetRenderDrawColor(window->renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
 
-    RenderGrid(window);
+    if (!iterate) {
+        RenderGrid(window);
+    }
     RenderCells(window, model);
+    RenderPlayingStatus(window, iterate);
 
     SDL_RenderPresent(window->renderer);
 }
@@ -95,4 +119,20 @@ void TranslatePointToArea(SDL_FPoint* p) {
     SDL_FRect area = GetGameArea();
     p->x -= area.x;
     p->y -= area.y;
+}
+
+static void RenderPlayingStatus(const Window* window, bool iterate) {
+    const char *status = iterate ? "Playing" : "Paused";
+    const char *tip = " - Press SPACE to play/pause";
+    char *text = malloc(strlen(status) + strlen(tip) + 1);
+    strcpy(text, status);
+    strcat(text, tip);
+
+    TTF_Text *ttf_text = TTF_CreateText(window->engine, window->font, text, strlen(text));
+
+    TTF_DrawRendererText(ttf_text, 10, 10);
+
+    TTF_DestroyText(ttf_text);
+
+    free(text);
 }

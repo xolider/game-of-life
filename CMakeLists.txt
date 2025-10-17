@@ -16,3 +16,5 @@ set(SOURCES src/main.c
         src/game.h)
 add_executable(gameoflife ${SOURCES})
 target_link_libraries(gameoflife SDL3::SDL3)
+
+install(TARGETS gameoflife)

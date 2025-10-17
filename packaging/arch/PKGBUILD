@@ -1,0 +1,26 @@
+# Maintainer: Clément Vicart <clem.vicart@gmail.com>
+pkgname=gameoflife-git
+pkgver=r0
+pkgrel=1
+pkgdesc="Simple Game of Life written in C"
+arch=(any)
+url="https://github.com/xolider/game-of-life"
+license=('GPL')
+depends=(sdl3)
+makedepends=(cmake ninja git)
+source=("${pkgname}-${pkgver}::git+https://github.com/xolider/game-of-life.git")
+sha256sums=('SKIP')
+
+pkgver() {
+	cd "$pkgname-$pkgver"
+	git describe --long --abbrev=7 | sed 's/\([^-]*-g\)/r\1/;s/-/./g'
+}
+
+build() {
+	cmake -S $srcdir -B build -G Ninja
+	cmake --build build
+}
+
+package() {
+	cmake --install "$srcdir/build" --prefix $pkgdir
+}

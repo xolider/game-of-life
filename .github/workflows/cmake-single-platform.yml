@@ -28,7 +28,7 @@ jobs:
         echo >> /home/runner/.bashrc
         echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> /home/runner/.bashrc
         eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-        sudo apt-get update && sudo apt-get install -y build-essentials
+        sudo apt-get update && sudo apt-get install -y gcc cmake make
         brew install gcc
         brew install sdl3 sdl3_ttf
 

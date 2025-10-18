@@ -23,7 +23,13 @@ jobs:
     - uses: actions/checkout@v4
 
     - name: Download dependencies
-      run: brew install sdl3 sdl3_ttf
+      run: |
+        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+        echo >> /home/runner/.bashrc
+        echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> /home/runner/.bashrc
+        eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+        sudo apt-get update && sudo apt-get install fonts-roboto
+        brew install gcc cmake make sdl3 sdl3_ttf
 
     - name: Configure CMake
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.

@@ -3,6 +3,10 @@ project(gameoflife VERSION 1.0 LANGUAGES C)
 
 set(CMAKE_C_STANDARD 23)
 
+if(NOT DEFINED ROBOTO_TTF_PATH)
+    message(FATAL_ERROR "You must specify ROBOTO_TTF_PATH")
+endif ()
+
 find_package(SDL3 REQUIRED)
 find_package(SDL3_ttf REQUIRED)
 include_directories(${SDL3_INCLUDE_DIRS} ${SDL3_ttf_INCLUDE_DIRS})

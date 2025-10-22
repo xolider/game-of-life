@@ -23,4 +23,7 @@ add_executable(gameoflife ${SOURCES})
 target_link_libraries(gameoflife PRIVATE SDL3::SDL3 SDL3_ttf::SDL3_ttf)
 target_compile_definitions(gameoflife PRIVATE ROBOTO_TTF_PATH="${ROBOTO_TTF_PATH}")
 
+include(GNUInstallDirs)
+
 install(TARGETS gameoflife)
+install(FILES files/game-of-life.desktop DESTINATION ${CMAKE_INSTALL_DATADIR}/applications)
